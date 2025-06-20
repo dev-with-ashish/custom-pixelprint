@@ -1,0 +1,71 @@
+{{ 'product-hero-3d.css' | asset_url | stylesheet_tag }}
+{{ 'product-hero-3d.js' | asset_url | script_tag }}
+
+<section class="ph3d-hero-section">
+  <div class="ph3d-hero-container">
+    <!-- Left: Gallery -->
+    <div class="ph3d-gallery">
+      <div class="ph3d-gallery-thumbs">
+        {% for media in product.media %}
+          <div class="ph3d-thumb" data-index="{{ forloop.index0 }}">
+            <img src="{{ media | img_url: '100x100' }}" alt="{{ media.alt | escape }}">
+          </div>
+        {% endfor %}
+      </div>
+      <div class="ph3d-gallery-main">
+        {% assign first_media = product.media.first %}
+        <img id="ph3d-main-img" src="{{ first_media | img_url: '800x800' }}" alt="{{ first_media.alt | escape }}">
+      </div>
+    </div>
+    <!-- Right: Product Details -->
+    <div class="ph3d-product-info">
+      <h1 class="ph3d-title">{{ product.title }}</h1>
+      <div class="ph3d-badge">Officially licensed</div>
+      <div class="ph3d-reviews">
+        ⭐ 4.7/5 &nbsp;|&nbsp; <span>16,602 reviews</span>
+      </div>
+      <div class="ph3d-short-desc">{{ product.description | strip_html | truncate: 120 }}</div>
+
+      <form class="ph3d-options" method="post" action="/cart/add">
+        <!-- Example for material -->
+        <div class="ph3d-option-row">
+          <label>Select product type:</label>
+          <div class="ph3d-variant-group">
+            {% for option in product.options_with_values %}
+              {% if option.name == 'Material' %}
+                {% for value in option.values %}
+                  <button type="button" class="ph3d-variant-btn" data-option="Material" data-value="{{ value | escape }}">{{ value }}</button>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        <!-- Example for size -->
+        <div class="ph3d-option-row">
+          <label>Choose size:</label>
+          <div class="ph3d-variant-group">
+            {% for option in product.options_with_values %}
+              {% if option.name == 'Size' %}
+                {% for value in option.values %}
+                  <button type="button" class="ph3d-variant-btn" data-option="Size" data-value="{{ value | escape }}">{{ value }}</button>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        <!-- Example for frame (use metafield, or customize as needed) -->
+        <div class="ph3d-option-row">
+          <label>Add frame:</label>
+          <div class="ph3d-frame-options">
+            <button type="button" class="ph3d-frame-btn" data-frame="none"></button>
+            <button type="button" class="ph3d-frame-btn frame1" data-frame="frame1"></button>
+            <button type="button" class="ph3d-frame-btn frame2" data-frame="frame2"></button>
+            <button type="button" class="ph3d-frame-btn frame3" data-frame="frame3"></button>
+          </div>
+        </div>
+        <div class="ph3d-price">${{ product.price | divided_by: 100.0 }}</div>
+        <button type="submit" class="ph3d-atc-btn">Add to Cart</button>
+      </form>
+    </div>
+  </div>
+</section>
