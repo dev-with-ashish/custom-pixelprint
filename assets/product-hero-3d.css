@@ -3,46 +3,59 @@
   color: #fff;
   padding: 40px 0;
 }
-.ph3d-hero-container {
-  display: flex;
-  gap: 60px;
-  max-width: 1300px;
+.ph3d-hero-main {
+  max-width: 1380px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  gap: 44px;
   align-items: flex-start;
   justify-content: center;
 }
-.ph3d-gallery {
+.ph3d-gallery-bar {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 18px;
+  align-items: flex-start;
 }
-.ph3d-gallery-thumbs {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.ph3d-thumb-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: box-shadow 0.18s;
+  box-shadow: 0 0 0 2px transparent;
 }
-.ph3d-thumb img {
+.ph3d-thumb-btn img, .ph3d-thumb-mediaicon {
   width: 64px;
   height: 64px;
   object-fit: cover;
   border-radius: 8px;
-  border: 2px solid #222;
-  cursor: pointer;
-  transition: border 0.2s;
+  display: block;
 }
-.ph3d-thumb img.active,
-.ph3d-thumb img:hover {
-  border: 2px solid #2de0fc;
+.ph3d-thumb-btn.active, .ph3d-thumb-btn:hover {
+  box-shadow: 0 0 0 2px #13b7e9;
 }
-.ph3d-gallery-main img {
-  width: 600px;
-  height: 400px;
+.ph3d-hero-preview {
+  background: #181a1e;
+  border-radius: 22px;
+  box-shadow: 0 4px 42px #0008;
+  padding: 36px 36px;
+  min-width: 650px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ph3d-hero-preview img {
+  max-width: 600px;
+  max-height: 400px;
   object-fit: contain;
-  border-radius: 16px;
-  box-shadow: 0 0 24px #0008;
+  border-radius: 14px;
+  background: #fff;
 }
-.ph3d-product-info {
-  max-width: 380px;
+.ph3d-hero-info {
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   gap: 22px;
@@ -50,12 +63,12 @@
 .ph3d-title {
   font-size: 2.4rem;
   font-weight: 700;
-  margin: 0 0 10px 0;
+  margin-bottom: 2px;
 }
 .ph3d-badge {
   background: #22262d;
   color: #00e7ff;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   padding: 4px 12px;
   border-radius: 6px;
   display: inline-block;
@@ -63,46 +76,31 @@
 }
 .ph3d-reviews {
   color: #99ecfd;
-  font-size: 1.05rem;
+  font-size: 1.08rem;
 }
 .ph3d-short-desc {
-  font-size: 1.1rem;
+  font-size: 1.14rem;
   color: #c4c7cc;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
-.ph3d-options {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-.ph3d-option-row label {
-  font-size: 1.06rem;
-  margin-bottom: 5px;
-  display: block;
-}
-.ph3d-variant-group {
-  display: flex;
-  gap: 14px;
-}
+.ph3d-options { display: flex; flex-direction: column; gap: 18px; }
+.ph3d-option-row label { font-size: 1.08rem; margin-bottom: 3px; display: block; }
+.ph3d-variant-group { display: flex; gap: 14px; }
 .ph3d-variant-btn {
-  padding: 7px 22px;
+  padding: 8px 24px;
   background: #222;
   border: none;
-  border-radius: 7px;
+  border-radius: 8px;
   color: #fff;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
-.ph3d-variant-btn.active,
-.ph3d-variant-btn:hover {
+.ph3d-variant-btn.active, .ph3d-variant-btn:hover {
   background: #13b7e9;
   color: #111;
 }
-.ph3d-frame-options {
-  display: flex;
-  gap: 14px;
-}
+.ph3d-frame-options { display: flex; gap: 12px; }
 .ph3d-frame-btn {
   width: 36px;
   height: 36px;
@@ -110,19 +108,21 @@
   border: 2px solid #888;
   background: #181b1e;
   cursor: pointer;
+  transition: border-color 0.18s;
 }
 .ph3d-frame-btn.frame1 { background: #988b63; }
 .ph3d-frame-btn.frame2 { background: #232323; }
 .ph3d-frame-btn.frame3 { background: #c1c1c1; }
+.ph3d-frame-btn.active, .ph3d-frame-btn:hover { border-color: #13b7e9; }
 .ph3d-price {
   font-size: 1.7rem;
   font-weight: 600;
-  margin: 10px 0 14px 0;
+  margin: 8px 0 12px 0;
 }
 .ph3d-atc-btn {
   background: linear-gradient(90deg, #00e7ff 0%, #0987f7 100%);
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1.16rem;
   font-weight: bold;
   padding: 12px 0;
   border: none;
@@ -132,14 +132,81 @@
   transition: opacity 0.2s;
 }
 .ph3d-atc-btn:hover { opacity: 0.92; }
+.ph3d-discover {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 1.08rem;
+  color: #d6f4fd;
+  opacity: 0.8;
+}
+.ph3d-arrow { font-size: 1.3em; }
 
-@media (max-width: 1024px) {
-  .ph3d-hero-container { flex-direction: column; gap: 32px; }
-  .ph3d-gallery-main img { width: 100%; max-width: 450px; height: auto; }
-  .ph3d-product-info { max-width: 100%; }
+@media (max-width: 1100px) {
+  .ph3d-hero-main {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 24px;
+  }
+  .ph3d-hero-preview {
+    min-width: unset;
+    padding: 18px 6vw;
+  }
 }
-@media (max-width: 600px) {
-  .ph3d-hero-section { padding: 18px 0; }
-  .ph3d-hero-container { gap: 16px; }
-  .ph3d-gallery-main img { max-width: 98vw; }
+@media (max-width: 700px) {
+  .ph3d-hero-section { padding: 12px 0; }
+  .ph3d-hero-main { gap: 10px; }
+  .ph3d-hero-preview { padding: 6vw 1vw; }
+  .ph3d-hero-preview img { max-width: 92vw; max-height: 60vw; }
+  .ph3d-gallery-bar { flex-direction: row; gap: 9px; justify-content: center; }
 }
+@media (max-width: 500px) {
+  .ph3d-title { font-size: 1.8rem; }
+  .ph3d-badge { font-size: 0.95rem; padding: 2px 8px; }
+  .ph3d-reviews { font-size: 0.95rem; }
+  .ph3d-short-desc { font-size: 1rem; }
+  .ph3d-price { font-size: 1.4rem; }
+  .ph3d-atc-btn { font-size: 1rem; padding: 10px 0; }
+}
+.ph3d-hero-info {
+  max-width: 100%;
+  padding: 0 16px;
+}
+.ph3d-hero-info .ph3d-title {
+  margin-bottom: 4px;
+}
+.ph3d-hero-info .ph3d-badge {
+  margin-bottom: 8px;
+}
+.ph3d-hero-info .ph3d-reviews {
+  margin-bottom: 8px;
+}
+.ph3d-hero-info .ph3d-short-desc {
+  margin-bottom: 12px;
+}
+.ph3d-hero-info .ph3d-price {
+  margin: 12px 0;
+}
+.ph3d-hero-info .ph3d-atc-btn {
+  margin-top: 16px;
+}
+.ph3d-hero-info .ph3d-discover {
+  margin-top: 24px;
+}
+.ph3d-hero-info .ph3d-discover a {
+  color: #00e7ff;
+  text-decoration: none;
+  font-weight: bold;
+}
+.ph3d-hero-info .ph3d-discover a:hover {
+  text-decoration: underline;
+}
+.ph3d-hero-info .ph3d-discover .ph3d-arrow {
+  margin-left: 8px;
+  color: #00e7ff;
+}
+.ph3d-hero-info .ph3d-options {
+  margin-top: 16px;
+}
+.ph3d-hero-info .ph3d-option-row {
+  margin-bottom: 12px;
+}       

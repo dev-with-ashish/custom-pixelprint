@@ -2,58 +2,59 @@
 {{ 'product-hero-3d.js' | asset_url | script_tag }}
 
 <section class="ph3d-hero-section">
-  <div class="ph3d-hero-container">
-    <!-- Left: Gallery -->
-    <div class="ph3d-gallery">
-      <div class="ph3d-gallery-thumbs">
-        {% for media in product.media %}
-          <div class="ph3d-thumb" data-index="{{ forloop.index0 }}">
+  <div class="ph3d-hero-main">
+    <!-- LEFT: Gallery Thumbs -->
+    <div class="ph3d-gallery-bar">
+      {% for media in product.media %}
+        <button class="ph3d-thumb-btn" data-index="{{ forloop.index0 }}">
+          {%- if media.media_type == 'image' -%}
             <img src="{{ media | img_url: '100x100' }}" alt="{{ media.alt | escape }}">
-          </div>
-        {% endfor %}
-      </div>
-      <div class="ph3d-gallery-main">
-        {% assign first_media = product.media.first %}
-        <img id="ph3d-main-img" src="{{ first_media | img_url: '800x800' }}" alt="{{ first_media.alt | escape }}">
-      </div>
+          {%- else -%}
+            <span class="ph3d-thumb-mediaicon">{% if media.media_type == 'video' %}▶️{% else %}🖼️{% endif %}</span>
+          {%- endif -%}
+        </button>
+      {% endfor %}
     </div>
-    <!-- Right: Product Details -->
-    <div class="ph3d-product-info">
+    <!-- CENTER: Main Preview -->
+    <div class="ph3d-hero-preview">
+      {% assign first_media = product.media.first %}
+      <img id="ph3d-main-img" src="{{ first_media | img_url: '900x700' }}" alt="{{ first_media.alt | escape }}">
+      <!-- 3D or Video player slot comes here later -->
+    </div>
+    <!-- RIGHT: Info/Selectors/ATC -->
+    <div class="ph3d-hero-info">
       <h1 class="ph3d-title">{{ product.title }}</h1>
       <div class="ph3d-badge">Officially licensed</div>
       <div class="ph3d-reviews">
         ⭐ 4.7/5 &nbsp;|&nbsp; <span>16,602 reviews</span>
       </div>
       <div class="ph3d-short-desc">{{ product.description | strip_html | truncate: 120 }}</div>
-
       <form class="ph3d-options" method="post" action="/cart/add">
-        <!-- Example for material -->
+        <!-- Material -->
+        {% assign mat_option = product.options_with_values | where: "name", "Material" | first %}
+        {% if mat_option %}
         <div class="ph3d-option-row">
           <label>Select product type:</label>
           <div class="ph3d-variant-group">
-            {% for option in product.options_with_values %}
-              {% if option.name == 'Material' %}
-                {% for value in option.values %}
-                  <button type="button" class="ph3d-variant-btn" data-option="Material" data-value="{{ value | escape }}">{{ value }}</button>
-                {% endfor %}
-              {% endif %}
+            {% for value in mat_option.values %}
+              <button type="button" class="ph3d-variant-btn" data-option="Material" data-value="{{ value | escape }}">{{ value }}</button>
             {% endfor %}
           </div>
         </div>
-        <!-- Example for size -->
+        {% endif %}
+        <!-- Size -->
+        {% assign size_option = product.options_with_values | where: "name", "Size" | first %}
+        {% if size_option %}
         <div class="ph3d-option-row">
           <label>Choose size:</label>
           <div class="ph3d-variant-group">
-            {% for option in product.options_with_values %}
-              {% if option.name == 'Size' %}
-                {% for value in option.values %}
-                  <button type="button" class="ph3d-variant-btn" data-option="Size" data-value="{{ value | escape }}">{{ value }}</button>
-                {% endfor %}
-              {% endif %}
+            {% for value in size_option.values %}
+              <button type="button" class="ph3d-variant-btn" data-option="Size" data-value="{{ value | escape }}">{{ value }}</button>
             {% endfor %}
           </div>
         </div>
-        <!-- Example for frame (use metafield, or customize as needed) -->
+        {% endif %}
+        <!-- Frame -->
         <div class="ph3d-option-row">
           <label>Add frame:</label>
           <div class="ph3d-frame-options">
@@ -68,25 +69,15 @@
       </form>
     </div>
   </div>
+  <div class="ph3d-discover">
+    <span>Discover more <span class="ph3d-arrow">▼</span></span>
+  </div>
 </section>
-
 {% schema %}
 {
   "name": "Product Hero 3D",
   "tag": "section",
-  "settings": [
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Product Hero Section"
-    }
-    // Add more settings here if you want to customize from the customizer
-  ],
-  "presets": [
-    {
-      "name": "Product Hero 3D"
-    }
-  ]
+  "settings": [],
+  "presets": [{"name": "Product Hero 3D"}]
 }
 {% endschema %}
