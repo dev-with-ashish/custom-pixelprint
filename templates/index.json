@@ -58,7 +58,7 @@
       "name": "Video with Collections Hero",
       "settings": {
         "video_url": "https://cdn.shopify.com/videos/c/o/v/4d26d566f751443fa54f4d2cbeebf119.mp4",
-        "container_type": "container-full",
+        "container_type": "container-fluid",
         "margin_top": 0,
         "margin_bottom": 0,
         "margin_left": 0,
