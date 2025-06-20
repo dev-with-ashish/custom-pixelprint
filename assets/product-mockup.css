@@ -1,0 +1,77 @@
+/* Responsive Hero Section container */
+.ccm-section {
+  position: relative;
+  width: 100%;
+  height: calc(100vw / 2.14);
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+/* Background styling */
+.ccm-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://cdn.shopify.com/s/files/1/0713/4901/0670/files/BG.jpg?v=1743338808') no-repeat center center;
+  background-size: cover;
+  transform: scaleY(1);
+  transform-origin: top;
+  z-index: 0;
+}
+
+/* Container for the poster */
+.ccm-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Poster container styling */
+.ccm-poster-container {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 17%;
+  overflow: visible;
+  top: 34%; 
+  left: 48%; 
+  z-index: 2;
+}
+
+/* Poster element styling */
+.ccm-poster {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  border: 0;
+  box-shadow: 0 0 10px rgba(1, 2, 3, 4);
+}
+
+@supports not (aspect-ratio: 3/4) {
+  .ccm-poster {
+    height: 0;
+    padding-top: 133.33%;
+    position: relative;
+  }
+}
+
+/* Crossfade image layer styling */
+.ccm-poster img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.ccm-poster img.active {
+  opacity: 1;
+}

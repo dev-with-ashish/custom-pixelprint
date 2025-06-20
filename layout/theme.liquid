@@ -1,0 +1,219 @@
+{% liquid
+  assign enable_rtl = settings.enable_rtl
+  assign language_support_rtl = settings.language_support_rtl
+  if enable_rtl and language_support_rtl != blank
+    assign shop_locale = localization.language.iso_code
+    assign language_support_rtl_list = language_support_rtl | split: ','
+    assign is_rtl = language_support_rtl_list | where: shop_locale
+    if is_rtl.size > 0
+      assign enable_rtl = true
+    else
+      assign enable_rtl = false
+    endif
+  endif
+
+  assign body_classes = 'template-' | append: template.name | append: ' ' | append: template.suffix | append: ' m-gradient m-color-' | append: settings.default_color_scheme
+  if settings.page_transition
+    assign body_classes = body_classes | append: ' m:overflow-hidden'
+  endif
+  if template.suffix == 'about-us'
+    assign body_classes = body_classes | append: ' sf__page-about'
+  endif
+%}
+<!doctype html>
+<html
+  class="no-js {% if settings.page_transition %} m:overflow-hidden{% endif %}"
+  lang="{{ request.locale.iso_code }}"
+  data-template="{{ template.name }}"
+  {% if enable_rtl %}
+    dir="rtl"
+  {% endif %}
+>
+  <head>
+    <!-- Added by AVADA SEO Suite -->
+    {% include 'avada-seo' %}
+    <!-- /Added by AVADA SEO Suite -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
+    <meta name="theme-color" content="{{ settings.color_primary }}">
+
+    {%- liquid
+      render 'preload'
+      render 'SEO'
+      render 'social-meta-tags'
+      render 'font-face'
+    -%}
+
+    {% render 'critical-css' %}
+
+    {{ 'main.css' | asset_url | stylesheet_tag }}
+    {% render 'style-tags' %}
+
+    <!-- Defer non-critical scripts for improved performance -->
+    <script src="{{ 'vendor.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'theme-global.js' | asset_url }}" defer="defer"></script>
+    {%- if settings.animations != 'none' -%}
+      <script src="{{ 'animations.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+    {%- if request.design_mode -%}
+      <script src="{{ 'theme-editor.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {{ content_for_header }}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      if (Shopify.designMode) {
+        document.documentElement.classList.add('shopify-design-mode');
+      }
+    </script>
+    {% render 'theme-data' %}
+    {% render 'custom-code-head' %}
+
+    <!-- Load third-party scripts asynchronously -->
+    <script async src="https://www.clarity.ms/tag/pvaci9uiox"></script>
+    <link rel="preconnect" href="https://www.clarity.ms">
+
+    <meta name="p:domain_verify" content="e0f2e657c30fec54174fd98967e3c597"/>
+
+    <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "pvaci9uiox");
+    </script>
+
+    <!-- Placeholder container for the video -->
+    <div id="videoContainer"></div>    
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Store", "OnlineStore"],
+  "name": "Aarohi PixelPrint",
+  "url": "https://www.aarohipixelprint.com",
+  "image": "https://www.aarohipixelprint.com/cdn/shop/files/Layer_1.png?",
+  "description": "Aarohi PixelPrint is a leading print shop in Noida offering high-quality printing services on flex, banners, canvas, vinyl, acrylic, metal, and sunboard. We also sell premium metal and acrylic posters online.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "First Floor, D-82, D Block, Sector 10",
+    "addressLocality": "Noida",
+    "addressRegion": "Uttar Pradesh",
+    "postalCode": "201301",
+    "addressCountry": "IN"
+  },
+  "telephone": "+919871315197",
+  "openingHours": "Mo-Su 09:00-19:00",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "5.0",
+    "reviewCount": "25"
+  },
+  "sameAs": [
+    "https://www.google.com/maps/place/Aarohi+PixelPrint/@28.590541,77.3311382,17z/data=!3m1!4b1!4m6!3m5!1s0x390ce59234e4fcd9:0xa9aa0977d08aa4d3!8m2!3d28.590541!4d77.3337131!16s%2Fg%2F11y4n5w1_j?entry=ttu&g_ep=EgoyMDI1MDQzMC4xIKXMDSoASAFQAw%3D%3D"
+  ]
+}
+</script>
+
+    <meta name="trustpilot-one-time-domain-verification-id" content="9a2b1e1d-62df-4cc8-a4c2-354893775a43"/>
+  </head>
+  
+  <body
+    id="m-theme"
+    class="{{ body_classes }}"
+    {% if template.name == 'product' %}
+      data-product-id="{{ product.id }}"
+    {% endif %}
+  >
+    {% render 'page-transition' %}
+    {%- liquid
+      render 'scroll-top-button'
+      sections 'header-group'
+    -%}
+
+    <style>
+      .hidden {
+        display: none;
+      }
+    </style>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        // Lazy Loading using Intersection Observer
+        const lazyImages = Array.prototype.slice.call(document.querySelectorAll("img.lazy-load"));
+        
+        if ("IntersectionObserver" in window) {
+          const lazyImageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                const lazyImage = entry.target;
+                // Ensure image width/height attributes are set in your markup to avoid layout shifts
+                lazyImage.src = lazyImage.dataset.src;
+                lazyImage.classList.remove("lazy-load");
+                observer.unobserve(lazyImage);
+              }
+            });
+          });
+          lazyImages.forEach(lazyImage => {
+            lazyImageObserver.observe(lazyImage);
+          });
+        } else {
+          // Fallback for browsers without IntersectionObserver support:
+          lazyImages.forEach(lazyImage => {
+            lazyImage.src = lazyImage.dataset.src;
+          });
+        }
+
+        // Service Worker Registration for custom caching
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+              console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(error => {
+              console.log('Service Worker registration failed:', error);
+            });
+        }
+      });
+    </script>
+
+    <main role="main" id="MainContent">
+      {{ content_for_layout }}
+    </main>
+
+    {%- sections 'footer-group' -%}
+
+    {% render 'script-tags' %}
+    {% render 'cookie-banner' %}
+    {% render 'custom-code-body' %}
+
+    <script src="{{ 'product-quick-view.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'wishlist.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'compare-product.js' | asset_url }}" defer="defer"></script>
+
+    {%- if settings.enable_predictive_search -%}
+      <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {%- if linklists['gift-wrapping'].links != blank
+      and linklists['gift-wrapping'].links.first.type == 'product_link'
+    -%}
+      <script src="{{ 'gift-wrapping.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {%- if settings.show_swatch_option -%}
+      <script src="{{ 'product-card-swatch.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {%- if settings.enable_cart_drawer and template != 'cart' -%}
+      {% render 'cart-drawer' %}
+    {%- endif -%}
+
+    
+    
+    
+
+  </body>
+</html>

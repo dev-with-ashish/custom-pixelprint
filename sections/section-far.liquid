@@ -1,0 +1,152 @@
+{% liquid
+  assign container = section.settings.container
+  if container == 'w-full'
+    assign container = 'container-full'
+  endif
+%}
+
+<section id="section-{{ section.id }}" class="m-section m-color-default">
+  <div class="{{ container }} m-section-my m-section-py">
+
+    <div class="faq-block">
+      {% for block in section.blocks %}
+        <div class="faq-item">
+          <button class="faq-question" type="button">{{ block.settings.question }} <span class="arrow">▼</span></button>
+          <div class="faq-answer" style="display: none;">
+            {{ block.settings.answer }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- FAQ Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {% for block in section.blocks %}
+        {
+          "@type": "Question",
+          "name": {{ block.settings.question | json }},
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": {{ block.settings.answer | strip_html | strip_newlines | json }}
+          }
+        }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }
+    </script>
+
+    <style>
+    .faq-block {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+
+    .faq-question {
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-question .arrow {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-question.active .arrow {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      padding: 10px 0;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    </style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const faqButtons = document.querySelectorAll('#section-{{ section.id }} .faq-question');
+      
+      faqButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const answer = button.nextElementSibling;
+          const isOpen = answer.style.display === 'block';
+          
+          // Close all answers
+          document.querySelectorAll('#section-{{ section.id }} .faq-answer').forEach(a => a.style.display = 'none');
+          document.querySelectorAll('#section-{{ section.id }} .faq-question').forEach(b => b.classList.remove('active'));
+          
+          // Toggle current answer
+          if (!isOpen) {
+            answer.style.display = 'block';
+            button.classList.add('active');
+          }
+        });
+      });
+    });
+    </script>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ Block",
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container-fluid",
+      "options": [
+        { "value": "container-fluid", "label": "Default" },
+        { "value": "w-full", "label": "Full width" },
+        { "value": "container", "label": "Use container box" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 15,
+  "presets": [
+    {
+      "name": "FAQ Block",
+      "blocks": [
+        { "type": "faq", "settings": { "question": "Sample Question", "answer": "<p>Sample Answer</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

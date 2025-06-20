@@ -1,0 +1,197 @@
+{% comment %}
+  Section: FC Slider1 with Flip
+  Displays a slider of products with a flip effect.
+  Ensure "fc-slider1.css" and "fc-slider1.js" are uploaded in your Assets folder.
+{% endcomment %}
+
+{{ 'fc-slider1.css' | asset_url | stylesheet_tag }}
+{{ 'fc-slider1.js' | asset_url | script_tag }}
+
+{% liquid
+  assign container = section.settings.container
+  if container == 'w-full'
+    assign container = 'container-full'
+  endif
+%}
+
+<section
+  id="section-{{ section.id }}"
+  class="m-section m-color-default"
+  style="
+    margin-top: {{ section.settings.margin_top }}px;
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+    margin-left: {{ section.settings.margin_left }}px;
+    margin-right: {{ section.settings.margin_right }}px;
+    background-color: #000000;
+  "
+>
+  <div class="{{ container }} m-section-my m-section-py">
+
+    <div class="fc-col1">
+      {% assign fc_coll = collections[section.settings.collection] %}
+      {% if fc_coll %}
+        {% if section.settings.show_title %}
+          <h2 class="fc-title1" style="text-align: {{ section.settings.title_alignment }};">{{ fc_coll.title }}</h2>
+        {% endif %}
+        
+        {% if fc_coll.products_count > 0 %}
+          {% assign sorted_products = fc_coll.products | sort: 'id' | reverse %}
+
+          {% if section.settings.enable_schema %}
+          <!-- Google ItemList Schema -->
+          <script type="application/ld+json">
+          {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": [
+              {% for product in sorted_products %}
+              {
+                "@type": "ListItem",
+                "position": {{ forloop.index }},
+                "url": {{ product.url | prepend: shop.url | json }},
+                "name": {{ product.title | json }},
+                "image": {{ product.featured_image | img_url: '600x600' | prepend: "https:" | json }},
+                "offers": {
+                  "@type": "Offer",
+                  "price": {{ product.price | money_without_currency | json }},
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}"
+                }
+              }{% unless forloop.last %},{% endunless %}
+              {% endfor %}
+            ]
+          }
+          </script>
+          {% endif %}
+
+          <div class="fc-slider1">
+            <button class="fc-arrow fc-prev1">❮</button>
+            <div class="fc-track1">
+              {% for product in sorted_products %}
+                <div class="fc-slide1">
+                  <a href="{{ product.url }}">
+                    <div class="fc-card1">
+                      <div class="fc-card-inner1">
+                        <div class="fc-card-front1">
+                          {% if product.featured_image %}
+                            <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}">
+                          {% else %}
+                            <img src="https://via.placeholder.com/600x400?text=No+Image" alt="{{ product.title }}">
+                          {% endif %}
+                        </div>
+                        <div class="fc-card-back1">
+                          <img src="https://cdn.shopify.com/s/files/1/0713/4901/0670/files/Poster_Back.jpg?v=1742971142&q=60" alt="Flip Image">
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                  <div class="fc-pname1">
+                    {{ product.title | split: " " | slice: 0, 5 | join: " " }}
+                  </div>
+                  <div class="fc-price1">
+                    From ₹{{ product.price | money_without_currency }}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+            <button class="fc-arrow fc-next1">❯</button>
+          </div>
+        {% else %}
+          <p>This collection has no products.</p>
+        {% endif %}
+      {% else %}
+        <p>No collection selected or collection not found.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FC Slider1 with Flip",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Select Collection"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_schema",
+      "label": "Enable Google ItemList Schema",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show Title",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "title_alignment",
+      "label": "Title Alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container-fluid",
+      "options": [
+        { "value": "container-fluid", "label": "Default" },
+        { "value": "w-full", "label": "Full width" },
+        { "value": "container", "label": "Use container box" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin Top (px)",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin Bottom (px)",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2
+    },
+    {
+      "type": "range",
+      "id": "margin_left",
+      "label": "Margin Left (px)",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2
+    },
+    {
+      "type": "range",
+      "id": "margin_right",
+      "label": "Margin Right (px)",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 2
+    }
+  ],
+  "presets": [
+    {
+      "name": "FC Slider1 with Flip",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

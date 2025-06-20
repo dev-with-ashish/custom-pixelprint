@@ -1,0 +1,205 @@
+{% liquid
+  assign container = section.settings.container
+  if container == 'w-full'
+    assign container = 'container-full'
+  endif
+%}
+
+<section id="section-{{ section.id }}" class="m-section m-color-default">
+  <div class="{{ container }} m-section-my m-section-py">
+
+    <div class="sub-collections-wrapper" style="position: relative;">
+
+      <!-- Scroll buttons -->
+      <button class="scroll-btn scroll-left" type="button" aria-label="Scroll Left">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18L9 12L15 6" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="scroll-btn scroll-right" type="button" aria-label="Scroll Right">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M9 6L15 12L9 18" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <!-- Horizontal scrollable row -->
+      <div class="sub-collections-scroll" style="
+        display: flex;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scroll-snap-type: x mandatory;
+        gap: 15px;
+        padding-bottom: 10px;
+      ">
+        {% for i in (1..10) %}
+          {% assign col_id = 'collection_' | append: i %}
+          {% assign col_handle = section.settings[col_id] %}
+          {% if col_handle != blank %}
+            {% assign collection_obj = collections[col_handle] %}
+            <div class="sub-collections-item" style="scroll-snap-align: start;">
+              <a href="{{ collection_obj.url }}">
+                <img src="{{ collection_obj.image | image_url: width: 600 }}" alt="{{ collection_obj.title }}" style="width: 100%; height: auto;">
+                <h4 style="text-align: center; margin-top: 10px;">{{ collection_obj.title }}</h4>
+              </a>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <!-- CSS -->
+    <style>
+      .sub-collections-wrapper {
+        position: relative;
+      }
+
+      .sub-collections-scroll {
+        display: flex;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scroll-snap-type: x mandatory;
+        gap: 15px;
+        padding-bottom: 10px;
+      }
+
+      .sub-collections-item {
+        flex: 0 0 calc(25% - 15px);
+        max-width: calc(25% - 15px);
+        scroll-snap-align: start;
+      }
+
+      @media (max-width: 768px) {
+        .sub-collections-item {
+          flex: 0 0 calc(50% - 15px);
+          max-width: calc(50% - 15px);
+          scroll-snap-align: start;
+        }
+      }
+
+      .scroll-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid #ddd;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease;
+      }
+
+      .scroll-left {
+        left: -20px;
+      }
+
+      .scroll-right {
+        right: -20px;
+      }
+
+      .scroll-btn.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .sub-collections-scroll::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+
+    <!-- JS -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const container = document.querySelector('#section-{{ section.id }} .sub-collections-scroll');
+        const btnLeft = document.querySelector('#section-{{ section.id }} .scroll-left');
+        const btnRight = document.querySelector('#section-{{ section.id }} .scroll-right');
+
+        function updateButtons() {
+          const scrollLeft = container.scrollLeft;
+          const maxScrollLeft = container.scrollWidth - container.clientWidth;
+
+          if (scrollLeft <= 5) {
+            btnLeft.classList.add('hidden');
+          } else {
+            btnLeft.classList.remove('hidden');
+          }
+
+          if (scrollLeft >= maxScrollLeft - 5) {
+            btnRight.classList.add('hidden');
+          } else {
+            btnRight.classList.remove('hidden');
+          }
+        }
+
+        function getScrollAmount() {
+          const item = container.querySelector('.sub-collections-item');
+          if (!item) return 0;
+
+          const itemWidth = item.offsetWidth + 15; // include gap
+          const viewportWidth = window.innerWidth;
+
+          if (viewportWidth > 768) {
+            return itemWidth * 4; // desktop → 4 items
+          } else {
+            return itemWidth * 2; // mobile → 2 items
+          }
+        }
+
+        btnLeft.addEventListener('click', function () {
+          container.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+        });
+
+        btnRight.addEventListener('click', function () {
+          container.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+        });
+
+        container.addEventListener('scroll', updateButtons);
+        window.addEventListener('resize', updateButtons);
+
+        // Initial check
+        updateButtons();
+      });
+    </script>
+
+  </div>
+</section>
+
+
+{% schema %}
+{
+  "name": "Sub Collections Picker",
+  "settings": [
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container-fluid",
+      "options": [
+        { "value": "container-fluid", "label": "Default" },
+        { "value": "w-full", "label": "Full width" },
+        { "value": "container", "label": "Use container box" }
+      ]
+    },
+    { "type": "collection", "id": "collection_1", "label": "Collection 1" },
+    { "type": "collection", "id": "collection_2", "label": "Collection 2" },
+    { "type": "collection", "id": "collection_3", "label": "Collection 3" },
+    { "type": "collection", "id": "collection_4", "label": "Collection 4" },
+    { "type": "collection", "id": "collection_5", "label": "Collection 5" },
+    { "type": "collection", "id": "collection_6", "label": "Collection 6" },
+    { "type": "collection", "id": "collection_7", "label": "Collection 7" },
+    { "type": "collection", "id": "collection_8", "label": "Collection 8" },
+    { "type": "collection", "id": "collection_9", "label": "Collection 9" },
+    { "type": "collection", "id": "collection_10", "label": "Collection 10" }
+  ],
+  "presets": [
+    {
+      "name": "Sub Collections Picker"
+    }
+  ]
+}
+{% endschema %}

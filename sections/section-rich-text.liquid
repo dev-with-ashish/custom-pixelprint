@@ -1,0 +1,136 @@
+{% liquid
+  assign container = section.settings.container
+  if container == 'w-full'
+    assign container = 'container-full'
+  endif
+%}
+
+<section id="section-{{ section.id }}" class="m-section m-color-default">
+  <div class="{{ container }} m-section-my m-section-py">
+    <div
+      class="rich-text"
+      style="
+        color: {{ section.settings.rich_text_color }};
+        font-size: {{ section.settings.rich_text_font_size }}px;
+        text-align: {{ section.settings.rich_text_alignment }};
+        line-height: {{ section.settings.rich_text_line_height }};
+        margin-left: {{ section.settings.rich_text_margin_left }}px;
+        margin-right: {{ section.settings.rich_text_margin_right }}px;
+        margin-bottom: {{ section.settings.rich_text_margin_bottom }}px;
+      "
+    >
+      {% if section.settings.content_mode == 'richtext' %}
+        {{ section.settings.rich_text }}
+      {% else %}
+        {{ section.settings.html_text }}
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Rich Text 2",
+  "settings": [
+    {
+      "type": "radio",
+      "id": "content_mode",
+      "label": "Content Mode",
+      "default": "richtext",
+      "options": [
+        { "value": "richtext", "label": "Rich Text Editor" },
+        { "value": "html", "label": "Raw HTML (advanced)" }
+      ]
+    },
+    {
+      "type": "richtext",
+      "id": "rich_text",
+      "label": "Rich Text Content"
+    },
+    {
+      "type": "textarea",
+      "id": "html_text",
+      "label": "HTML Content",
+      "default": "<p>Custom <br> HTML content here</p>"
+    },
+    {
+      "type": "color",
+      "id": "rich_text_color",
+      "label": "Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "rich_text_font_size",
+      "label": "Font Size (px)",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "rich_text_alignment",
+      "label": "Text Alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "rich_text_line_height",
+      "label": "Line Height",
+      "min": 1,
+      "max": 3,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "range",
+      "id": "rich_text_margin_left",
+      "label": "Margin Left (px)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "rich_text_margin_right",
+      "label": "Margin Right (px)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "rich_text_margin_bottom",
+      "label": "Margin Bottom (px)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container-fluid",
+      "options": [
+        { "value": "container-fluid", "label": "Default" },
+        { "value": "w-full", "label": "Full width" },
+        { "value": "container", "label": "Use container box" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rich Text (with HTML)"
+    }
+  ]
+}
+{% endschema %}

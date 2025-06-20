@@ -1,0 +1,222 @@
+<div class="container">
+  <!-- Interactive Poster Section -->
+  <div class="poster" data-offset="10">
+    <div class="side front">
+      <div class="front-image"></div>
+      <!-- Shine element for dynamic lighting effect -->
+      <div class="shine"></div>
+      <div class="layer-1" data-offset="10"></div>
+      <div class="layer-2" data-offset="20"></div>
+      <div class="layer-3" data-offset="40"></div>
+    </div>
+    <div class="side back"></div>
+  </div>
+
+  <style>
+    /* Container styling with 3D perspective */
+    .container {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+        background: linear-gradient(to bottom, #f6f7fc 0%, #d5e1e8 40%);
+        perspective: 970px;
+    }
+    
+    /* Poster styling and 3D effect */
+    .poster {
+        position: absolute;
+        top: 10%;
+        left: 40%;
+        width: 560px;
+        height: 784px;
+        transform-style: preserve-3d;
+        transition: transform 0.2s ease-out;
+        z-index: 10;
+        cursor: pointer;
+    }
+    
+    .side {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        backface-visibility: hidden;
+    }
+    
+    /* FRONT SIDE */
+    .side.front .front-image {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: url("https://cdn.displate.com/artwork/560x784/2025-02-25/5bfc0168498b805b6bd2b16e2864f6c9_d2c336a4f2cc9c13ba8df4b7914abc03.jpg") center/cover no-repeat;
+        backface-visibility: hidden;
+    }
+    
+    /* Shine element styling for transparent gloss effect */
+    .shine {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        /* Initial shine state (transparent) */
+        background: linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 100%);
+        transition: background 0.2s ease-out;
+    }
+    
+    /* BACK SIDE */
+    .side.back {
+        background: url("https://cdn.shopify.com/s/files/1/0713/4901/0670/files/Poster_Back.jpg") center/cover no-repeat;
+        transform: rotateY(180deg);
+    }
+    
+    /* Additional page content styling */
+    .other-section {
+        position: relative;
+        z-index: 1;
+        margin-top: 800px;
+        padding: 20px;
+        background-color: #fff;
+    }
+  </style>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+      $(document).ready(function() {
+        var $poster = $('.poster');
+        // Set a default data-offset if not already provided
+        if (typeof $poster.data('offset') === 'undefined') {
+          $poster.attr('data-offset', "10");
+        }
+        
+        var isDragging = false;
+        var lastX = 0;
+        var lastY = 0;
+        var currentRotateX = 0;
+        var currentRotateY = 0;
+        
+        // Start dragging on mousedown
+        $(document).on('mousedown', function(e) {
+          isDragging = true;
+          lastX = e.pageX;
+          lastY = e.pageY;
+          e.preventDefault();
+        });
+        
+        // Rotate poster while dragging
+        $(document).on('mousemove', function(e) {
+          if (isDragging) {
+            var deltaX = e.pageX - lastX;
+            var deltaY = e.pageY - lastY;
+            var sensitivity = 0.5; // Adjust for speed of rotation
+            currentRotateY += deltaX * sensitivity;
+            currentRotateX -= deltaY * sensitivity;
+            $poster.css('transform', "rotateX(" + currentRotateX + "deg) rotateY(" + currentRotateY + "deg)");
+            lastX = e.pageX;
+            lastY = e.pageY;
+          }
+        });
+        
+        // Stop dragging on mouseup or mouseleave (do not reset rotation)
+        $(document).on('mouseup mouseleave', function() {
+          isDragging = false;
+        });
+        
+        // Hover effect for parallax layers (shine and additional layers)
+        var $shine = $('.shine');
+        var $layer = $('div[class*="layer-"]');
+        
+        $(window).on('mousemove', function(e) {
+          if (!isDragging) {
+            var w = $(window).width();
+            var h = $(window).height();
+            var offsetX = 0.5 - e.pageX / w;
+            var offsetY = 0.5 - e.pageY / h;
+            var offsetPoster = $poster.data('offset');
+            
+            // Update layer translations for a subtle parallax effect
+            $layer.each(function() {
+              var $this = $(this);
+              var offsetLayer = $this.data('offset') || 0;
+              var transformLayer = 'translateX(' + (offsetX * offsetLayer) + 'px) ' +
+                                   'translateY(' + (offsetY * offsetLayer) + 'px)';
+              $this.css('transform', transformLayer);
+            });
+          }
+        });
+        
+        // Add tilt effect and update shine on hover over the poster
+        $poster.on('mousemove', function(e) {
+          if (!isDragging) {
+            var offset = $poster.offset();
+            var width = $poster.width();
+            var height = $poster.height();
+            var centerX = offset.left + width / 2;
+            var centerY = offset.top + height / 2;
+            
+            // Calculate the difference between the mouse pointer and the center of the poster.
+            var deltaX = e.pageX - centerX;
+            var deltaY = e.pageY - centerY;
+            
+            // Adjust sensitivity of the tilt effect.
+            var tiltX = -deltaY * 0.05; // Negative so moving up tilts upward.
+            var tiltY = deltaX * 0.05;  // Positive so moving right tilts right.
+            
+            // Combine the current drag rotation with the additional tilt.
+            $poster.css('transform', "rotateX(" + (currentRotateX + tiltX) + "deg) rotateY(" + (currentRotateY + tiltY) + "deg)");
+            
+            // Compute the angle for the shine effect.
+            var angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+            // Offset angle so the gradient aligns nicely with the tilt.
+            var shineAngle = angle - 90;
+            
+            // Update the shine element's background gradient with a transparent shine effect.
+            $shine.css('background', "linear-gradient(" + shineAngle + "deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 80%)");
+          }
+        });
+        
+        // When the mouse leaves the poster, revert the shine effect and tilt back to the drag rotation.
+        $poster.on('mouseleave', function() {
+          if (!isDragging) {
+            $poster.css('transform', "rotateX(" + currentRotateX + "deg) rotateY(" + currentRotateY + "deg)");
+            // Remove the shine effect by setting the gradient to fully transparent.
+            $shine.css('background', "linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 100%)");
+          }
+        });
+      });
+  </script>
+
+  {% schema %}
+  {
+    "name": "Interactive Poster",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "front_image",
+        "label": "Front Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "back_image",
+        "label": "Back Image"
+      },
+      {
+        "type": "range",
+        "id": "poster_offset",
+        "label": "Poster Offset",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "default": 10
+      }
+    ],
+    "presets": [
+      {
+        "name": "Interactive Poster"
+      }
+    ]
+  }
+  {% endschema %}
+</div>

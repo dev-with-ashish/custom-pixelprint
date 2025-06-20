@@ -1,0 +1,288 @@
+{% liquid
+  assign container = section.settings.container_type
+  if container == 'w-full'
+    assign container = 'container-full'
+  endif
+
+  assign margin_top = section.settings.margin_top | append: 'px'
+  assign margin_bottom = section.settings.margin_bottom | append: 'px'
+  assign margin_left = section.settings.margin_left | append: 'px'
+  assign margin_right = section.settings.margin_right | append: 'px'
+  assign padding_top = section.settings.padding_top | append: 'px'
+  assign padding_bottom = section.settings.padding_bottom | append: 'px'
+  assign padding_left = section.settings.padding_left | append: 'px'
+  assign padding_right = section.settings.padding_right | append: 'px'
+  assign padding_top_card = section.settings.padding_top_card | append: 'px'
+  assign padding_bottom_card = section.settings.padding_bottom_card | append: 'px'
+  assign padding_left_card = section.settings.padding_left_card | append: 'px'
+  assign padding_right_card = section.settings.padding_right_card | append: 'px'
+  assign container_height = section.settings.container_height | append: 'px'
+  assign mobile_video_height = section.settings.mobile_video_height | append: 'px'
+%}
+
+<style>
+  .video-collection-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    max-width: 1420px;
+    margin: 0 auto;
+    height: {{ container_height }};
+    background-color: #000000; 
+  }
+  .video-container {
+    flex: 1 1 55%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    position: relative;
+  }
+  /* --- Overlay Styles --- */
+  .video-overlay-hero {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2.3vw 2vw 2.5vw 2vw; /* top right bottom left */
+    pointer-events: none;
+  }
+  .promo-badge {
+    background: #ffe6e6;
+    color: #d74b4b;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 5px 16px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 16px;
+    letter-spacing: 0.03em;
+    pointer-events: auto;
+  }
+  .promo-headline {
+    color: #fff;
+    font-size: 2vw;
+    font-weight: 700;
+    line-height: 1.13;
+    margin-bottom: 18px;
+    max-width: 100%;
+    pointer-events: auto;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.27);
+  }
+  .promo-btn {
+    display: inline-block;
+    background: #2493ff;
+    color: #fff;
+    font-size: 1.1vw;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 14px 38px;
+    text-decoration: none;
+    margin-top: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: background .2s;
+    pointer-events: auto;
+  }
+  .promo-btn:hover {
+    background: #176bcc;
+  }
+
+  @media (max-width: 1024px) {
+    .video-collection-wrapper {
+      flex-direction: column;
+      height: auto !important;
+    }
+    .video-collection-wrapper > div {
+      width: 100% !important;
+    }
+    .video-collection-wrapper .video-container {
+      height: {{ mobile_video_height }} !important;
+    }
+    /* --- PROMO CONTAINER: SMALLER on mobile --- */
+    .video-overlay-hero {
+      width: 98%;
+      max-width: 100vw;
+      padding: 3vw 2vw 3vw 2vw; /* less padding */
+      border-radius: 0 0 12px 12px;
+    }
+    .promo-headline {
+      font-size: 4.2vw;    /* smaller text */
+      margin-bottom: 8px;
+    }
+    .promo-btn {
+      font-size: 2.2vw;    /* smaller text */
+      padding: 7px 15px;   /* smaller button */
+      border-radius: 8px;
+    }
+    .promo-badge {
+      font-size: 10px;     /* smaller badge */
+      padding: 2.5px 7px;
+      margin-bottom: 6px;
+      border-radius: 6px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .video-overlay-hero {
+      padding: 2vw 2vw 2vw 2vw;
+    }
+    .promo-headline {
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+    .promo-btn {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 7px;
+    }
+    .promo-badge {
+      font-size: 8px;
+      padding: 1.5px 6px;
+      margin-bottom: 3px;
+      border-radius: 5px;
+    }
+  }
+</style>
+
+<div class="homePage_container__Oe42p homePage_lineSeparator__zXRgp"
+     style="margin: {{ margin_top }} {{ margin_right }} {{ margin_bottom }} {{ margin_left }}; background-color: #000000;">
+  <section class="whatsNew_container__YarnX" id="whats-new" data-testid="whats-new">
+    <div class="{{ container }} m-section-my m-section-py"
+         style="padding: {{ padding_top }} {{ padding_right }} {{ padding_bottom }} {{ padding_left }};">
+
+      <div class="video-collection-wrapper">
+
+        <!-- Video Area with Bottom-Left Overlay -->
+        <div class="video-container">
+          <!-- Overlay Content -->
+          <div class="video-overlay-hero">
+            <div class="promo-badge">PROMO</div>
+            <div class="promo-headline">Free Shipping All Over India</div>
+            <a class="promo-btn" href="https://www.aarohipixelprint.com/collections/bestseller">Shop now</a>
+          </div>
+          <video 
+            src="{{ section.settings.video_url | escape }}" 
+            autoplay 
+            loop 
+            muted 
+            playsinline 
+            style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+          </video>
+        </div>
+
+        <!-- Scrollable Collections -->
+        <div style="flex: 1 1 32%; height: 100%; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
+          {% for block in section.blocks %}
+            {% assign collection = block.settings.collection %}
+            {% if collection %}
+              <a href="{{ collection.url }}" style="text-decoration: none; color: inherit;">
+                <div style="display: flex; align-items: center; gap: 16px; padding: {{ padding_top_card }} {{ padding_right_card }} {{ padding_bottom_card }} {{ padding_left_card }}; border-radius: 12px; background-color: #000000; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);">
+
+                  {% if collection.image %}
+  <img
+    src="{{ collection.image | image_url: width: 480 }}"
+    srcset="{{ collection.image | image_url: width: 960 }} 2x"
+    alt="{{ collection.title }}"
+    style="border-radius: 8px;
+           width: 50%;
+           aspect-ratio: 32/20;
+           object-fit: cover;
+           flex-shrink: 0;"
+  >
+{% endif %}
+
+                  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+  <div style="font-size: 12px; font-weight: 600; color: #ffffff; text-transform: uppercase; letter-spacing: 0.05em;">{{ block.settings.label_text }}</div>
+  <p style="margin: 0; font-weight: 600; font-size: 16px; color: #ffffff; line-height: 1.4;">{{ collection.title }}</p>
+  <div style="display: flex; align-items: center; gap: 6px;">
+    <img src="{{ block.settings.author_icon | image_url: width: 40 }}" alt="{{ block.settings.author_name }} Icon" style="width: 20px; height: 20px; border-radius: 50%;">
+    <span style="font-size: 14px; font-weight: 500; color: #ffffff;">{{ block.settings.author_name }}</span>
+  </div>
+</div>
+</div>
+              </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Video + Collections Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Video URL",
+      "default": "https://cdn.shopify.com/videos/c/o/v/32f3e06ef2024b43990ae6840f1991cf.mp4"
+    },
+    {
+      "type": "select",
+      "id": "container_type",
+      "label": "Container Type",
+      "default": "container-full",
+      "options": [
+        { "value": "container", "label": "Boxed Container" },
+        { "value": "container-full", "label": "Full Width" },
+        { "value": "container-fluid", "label": "Fluid Container" },
+        { "value": "w-full", "label": "Edge-to-edge (Full Bleed)" }
+      ]
+    },
+    { "type": "range", "id": "margin_top", "label": "Margin Top", "default": 0, "min": 0, "max": 100, "step": 2, "unit": "px" },
+    { "type": "range", "id": "margin_bottom", "label": "Margin Bottom", "default": 0, "min": 0, "max": 100, "step": 2, "unit": "px" },
+    { "type": "range", "id": "margin_left", "label": "Margin Left", "default": 0, "min": 0, "max": 100, "step": 2, "unit": "px" },
+    { "type": "range", "id": "margin_right", "label": "Margin Right", "default": 0, "min": 0, "max": 100, "step": 2, "unit": "px" },
+    { "type": "range", "id": "padding_top", "label": "Padding Top", "default": 0, "min": 0, "max": 100, "step": 2, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding Bottom", "default": 0, "min": 0, "max": 100, "step": 2, "unit": "px" },
+    { "type": "range", "id": "padding_left", "label": "Padding Left", "default": 0, "min": 0, "max": 100, "step": 2, "unit": "px" },
+    { "type": "range", "id": "padding_right", "label": "Padding Right", "default": 0, "min": 0, "max": 100, "step": 2, "unit": "px" },
+    { "type": "range", "id": "container_height", "label": "Section Height", "default": 500, "min": 300, "max": 1000, "step": 20, "unit": "px" },
+    { "type": "range", "id": "mobile_video_height", "label": "Mobile Video Height", "default": 300, "min": 150, "max": 800, "step": 10, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label_text",
+          "label": "Badge Label",
+          "default": "New Designs"
+        },
+        {
+          "type": "image_picker",
+          "id": "author_icon",
+          "label": "Author Icon"
+        },
+        {
+          "type": "text",
+          "id": "author_name",
+          "label": "Author Name",
+          "default": "ELDEN RING"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Select Collection"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Video with Collections Hero",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,118 @@
+{% comment %}
+  Section: Multi-Collection Crossfade Slider with Hero Styling & Clickable Posters
+  Displays three products from one of five selected collections at a time.
+  Every interval, the slider shows three products from the next collection.
+{% endcomment %}
+
+{%- comment -%} ↓ Preload the hero background image for a faster LCP ↓ {%- endcomment -%}
+<link
+  rel="preload"
+  as="image"
+  href="{{ 'BG.webp' | asset_url }}"
+>
+
+{%- comment -%} ↓ Non-blocking CSS preload optional tweak ↓ {%- endcomment -%}
+<link
+  rel="preload"
+  href="{{ 'collection-crossfade-slider.css' | asset_url }}"
+  as="style"
+  onload="this.onload=null;this.rel='stylesheet'"
+>
+<noscript>
+  {{ 'collection-crossfade-slider.css' | asset_url | stylesheet_tag }}
+</noscript>
+
+<section class="ccm-section">
+  <div class="ccm-bg"></div>
+  <div class="ccm-container">
+    <div class="ccm-poster-container ccm-poster1-container">
+      <div class="ccm-poster ccm-poster1"></div>
+    </div>
+    <div class="ccm-poster-container ccm-poster2-container">
+      <div class="ccm-poster ccm-poster2"></div>
+    </div>
+    <div class="ccm-poster-container ccm-poster3-container">
+      <div class="ccm-poster ccm-poster3"></div>
+    </div>
+  </div>
+
+  {% comment %}
+    Build a JSON array string containing the product data for each of the five collections.
+  {% endcomment %}
+  {% assign collectionsArrayStr = "" %}
+  {% for i in (1..5) %}
+    {% assign key = "collection" | append: i %}
+    {% assign collection_handle = section.settings[key] %}
+    {% if collection_handle != blank and collections[collection_handle] %}
+      {% assign coll = collections[collection_handle] %}
+      {% capture collData %}
+{"productData": [
+  {%- for product in coll.products -%}
+    {"image": "{% if product.featured_image %}{{ product.featured_image | img_url: '600x' | escape }}{% else %}https://via.placeholder.com/600x400?text=No+Image{% endif %}", "url": "{{ product.url | escape }}"}{% unless forloop.last %},{% endunless %}
+  {%- endfor -%}
+]}
+      {% endcapture %}
+      {% if collectionsArrayStr != "" %}
+        {% assign collectionsArrayStr = collectionsArrayStr | append: "," %}
+      {% endif %}
+      {% assign collectionsArrayStr = collectionsArrayStr | append: collData %}
+    {% endif %}
+  {% endfor %}
+
+  {% if collectionsArrayStr != "" %}
+    <script>
+      window.ccmSettings = {
+        animationInterval: {{ section.settings.animation_interval | default: 3000 }},
+        collections: [{{ collectionsArrayStr }}]
+      };
+    </script>
+    {{ 'collection-crossfade-slider.js' | asset_url | script_tag }}
+  {% else %}
+    <p>No collections selected or the selected collections have no products.</p>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Hero Collection",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection1",
+      "label": "Select Collection 1"
+    },
+    {
+      "type": "collection",
+      "id": "collection2",
+      "label": "Select Collection 2"
+    },
+    {
+      "type": "collection",
+      "id": "collection3",
+      "label": "Select Collection 3"
+    },
+    {
+      "type": "collection",
+      "id": "collection4",
+      "label": "Select Collection 4"
+    },
+    {
+      "type": "collection",
+      "id": "collection5",
+      "label": "Select Collection 5"
+    },
+    {
+      "type": "number",
+      "id": "animation_interval",
+      "label": "Animation Interval (ms)",
+      "default": 3000
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Collection",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

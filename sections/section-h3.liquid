@@ -1,0 +1,121 @@
+{% liquid
+  assign container = section.settings.container
+  if container == 'w-full'
+    assign container = 'container-full'
+  endif
+%}
+
+<section id="section-{{ section.id }}" class="m-section m-color-default">
+  <div class="{{ container }} m-section-my m-section-py">
+    <h3
+      style="
+        color: {{ section.settings.h3_color }};
+        font-size: {{ section.settings.h3_font_size }}px;
+        text-align: {{ section.settings.h3_alignment }};
+        font-weight: {{ section.settings.h3_font_weight }};
+        margin-bottom: {{ section.settings.h3_margin_bottom }}px;
+        margin-left: {{ section.settings.h3_margin_left }}px;
+        margin-right: {{ section.settings.h3_margin_right }}px;
+      "
+    >
+      {{ section.settings.h3_text }}
+    </h3>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "h3 Heading",
+  "settings": [
+    {
+      "type": "text",
+      "id": "h3_text",
+      "label": "h3 Text",
+      "default": "This is an h3 Heading"
+    },
+    {
+      "type": "color",
+      "id": "h3_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "h3_font_size",
+      "label": "Font Size (px)",
+      "min": 12,
+      "max": 100,
+      "step": 1,
+      "default": 48
+    },
+    {
+      "type": "select",
+      "id": "h3_alignment",
+      "label": "Text Alignment",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "h3_font_weight",
+      "label": "Font Weight",
+      "default": "700",
+      "options": [
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Normal (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra Bold (800)" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "h3_margin_left",
+      "label": "Margin Left (px)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "h3_margin_right",
+      "label": "Margin Right (px)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "h3_margin_bottom",
+      "label": "Margin Bottom (px)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container-fluid",
+      "options": [
+        { "value": "container-fluid", "label": "Default" },
+        { "value": "w-full", "label": "Full width" },
+        { "value": "container", "label": "Use container box" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "H3 Heading"
+    }
+  ]
+}
+{% endschema %}

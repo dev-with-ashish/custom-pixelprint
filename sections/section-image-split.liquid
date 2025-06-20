@@ -1,0 +1,28 @@
+{% schema %}
+{
+  "name": "5 Image Split",
+  "settings": [
+    { "type": "image_picker", "id": "img1", "label": "Image 1" },
+    { "type": "image_picker", "id": "img2", "label": "Image 2" },
+    { "type": "image_picker", "id": "img3", "label": "Image 3" },
+    { "type": "image_picker", "id": "img4", "label": "Image 4" },
+    { "type": "image_picker", "id": "img5", "label": "Image 5" }
+  ],
+  "presets": [
+    {
+      "name": "5 Image Split"
+    }
+  ]
+}
+{% endschema %}
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  {% for i in (1..5) %}
+    {% assign image_id = 'img' | append: i %}
+    {% if section.settings[image_id] != blank %}
+      <div style="flex: 1 1 20%; max-width: 20%;">
+        <img src="{{ section.settings[image_id] | image_url: width: 600 }}" alt="" style="width: 100%; height: auto;">
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>

@@ -1,0 +1,300 @@
+<!-- testimonial-slider.liquid -->
+<section class="testimonial-section">
+  <div class="testimonial-container">
+    <!-- SVG grid background -->
+    <svg class="grid-bg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="gridPattern" width="50" height="50" patternUnits="userSpaceOnUse">
+          <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#bad8c8" stroke-width="4" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#gridPattern)" />
+    </svg>
+    
+    <!-- Slider viewport -->
+    <div class="slider-viewport">
+      <div class="testimonial-slider">
+        {% for block in section.blocks %}
+          <div class="testimonial-slide">
+            <div class="testimonial-inner">
+              <!-- Left column: Image -->
+              <div class="left-block">
+                {% if block.settings.image != blank %}
+                  <img src="{{ block.settings.image | img_url: 'master' }}" alt="{{ block.settings.name | escape }}" />
+                {% else %}
+                  <img src="https://via.placeholder.com/400" alt="Placeholder image" />
+                {% endif %}
+              </div>
+              <!-- Right column: Review text -->
+              <div class="center-block">
+                <div class="reviewer-rating">{{ block.settings.rating }}</div>
+                <h3 class="review-title">“{{ block.settings.title }}”</h3>
+                <p class="review-content">{{ block.settings.content }}</p>
+                <p class="reviewer-name">{{ block.settings.name }}</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .testimonial-section {
+      position: relative;
+      padding: 0rem;
+      background: #000;
+      font-family: Arial, sans-serif;
+    }
+    
+    .testimonial-container {
+      max-height:400px;
+      position: relative;
+      padding-top: 4rem;
+      padding-left: 6rem;
+      padding-bottom: 4rem;
+      overflow: hidden;
+    }
+    
+    .grid-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    
+    .slider-viewport {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+    
+    .testimonial-slider {
+      max-height:200px;
+      display: flex;
+      align-items: stretch;
+      transition: transform 0.5s ease;
+      z-index: 2;
+      position: relative;
+      cursor: grab;
+      will-change: transform;
+    }
+    
+    .testimonial-slide {
+      max-height:200px;
+      flex: 0 0 60%;
+      display: flex;
+      box-sizing: border-box;
+      padding-right: 1rem;
+    }
+    
+    .testimonial-inner {
+      max-height:200px;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 40% 60%;
+      gap: 1rem;
+      border: 2px solid #2765fa;
+      padding: 1rem;
+      background: #000;
+      min-height: 200px;
+    }
+    
+    .left-block img {
+      max-height:150px;
+      display: inline;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      padding: 1rem;
+    }
+    
+    .center-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      text-align: left;
+    }
+    
+    .reviewer-rating {
+      font-size: 1.5rem;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    
+    .review-title {
+      font-size: 24px;
+      line-height: 30px;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    
+    .review-content {
+      font-size: 16px;
+      line-height: 24px;
+      color: #fff;
+      margin-bottom: 1rem;
+      max-width: 350px;
+    }
+    
+    .reviewer-name {
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    @media screen and (max-width: 900px) {
+      .testimonial-inner {
+        grid-template-columns: 1fr;
+      }
+      .testimonial-container {
+        padding-left: 2rem;
+        padding-bottom: 4rem;
+      }
+      .testimonial-slide {
+        flex: 0 0 70%;
+        padding-right: 1rem;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const slider = document.querySelector('.testimonial-slider');
+      const slides = document.querySelectorAll('.testimonial-slide');
+      let currentIndex = 0;
+      let isDragging = false;
+      let startX = 0;
+      let currentTranslate = 0;
+      let prevTranslate = 0;
+      let animationID = 0;
+
+      // Calculate slide width dynamically for responsive
+      function getSlideWidth() {
+        return slides[0].offsetWidth;
+      }
+
+      // Set slider position
+      function setSliderPosition() {
+        slider.style.transform = `translateX(-${currentIndex * getSlideWidth()}px)`;
+      }
+
+      // Touch/Mouse drag handlers
+      function touchStart(index) {
+        return function(event) {
+          isDragging = true;
+          startX = event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+          animationID = requestAnimationFrame(animation);
+          slider.style.cursor = 'grabbing';
+        }
+      }
+
+      function touchMove(event) {
+        if (!isDragging) return;
+        const x = event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+        const dx = x - startX;
+        currentTranslate = prevTranslate + dx;
+        slider.style.transform = `translateX(${currentTranslate}px)`;
+      }
+
+      function touchEnd() {
+        cancelAnimationFrame(animationID);
+        isDragging = false;
+        const movedBy = currentTranslate - prevTranslate;
+        const slideWidth = getSlideWidth();
+        if (movedBy < -slideWidth/4 && currentIndex < slides.length - 1) currentIndex++;
+        if (movedBy > slideWidth/4 && currentIndex > 0) currentIndex--;
+        setSliderPosition();
+        prevTranslate = -currentIndex * slideWidth;
+        slider.style.cursor = 'grab';
+      }
+
+      function animation() {
+        if (isDragging) requestAnimationFrame(animation);
+      }
+
+      // Touch events
+      slider.addEventListener('touchstart', touchStart(currentIndex));
+      slider.addEventListener('touchmove', touchMove);
+      slider.addEventListener('touchend', touchEnd);
+
+      // Mouse events for desktop drag
+      slider.addEventListener('mousedown', touchStart(currentIndex));
+      slider.addEventListener('mousemove', touchMove);
+      slider.addEventListener('mouseup', touchEnd);
+      slider.addEventListener('mouseleave', function(){
+        if (isDragging) touchEnd();
+      });
+
+      // Resize = recalc position
+      window.addEventListener('resize', setSliderPosition);
+
+      // Initialize
+      setSliderPosition();
+    });
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonial Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "WHAT’RE THEY SAYING?"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Reviewer Image"
+        },
+        {
+          "type": "text",
+          "id": "rating",
+          "label": "Rating (e.g. ★★★★★)",
+          "default": "★★★★★"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Review Title",
+          "default": "THESE ARE JUST BEAUTIFUL!"
+        },
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": "Review Content",
+          "default": "Such unique colourways Comet brings out, I couldn’t stop at one and am looking for more now. Not to forget the comfort and cushioning it provides is unmatched!"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Reviewer Name",
+          "default": "ANAITHA K."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonial Slider",
+      "category": "Testimonials"
+    }
+  ]
+}
+{% endschema %}

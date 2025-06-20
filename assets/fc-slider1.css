@@ -1,0 +1,137 @@
+/* Base styles for FC Slider1 */
+.fc-col1 {
+  padding: 2px;
+  max-width: 1420px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  background: #000000;
+}
+
+.fc-title1 {
+  text-align: center;
+  margin: 20px 0;
+  color: #ffffff;
+}
+
+/* Slider container */
+.fc-slider1 {
+  position: relative;
+  overflow: hidden;
+  background: #000000;
+  border-top: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  border-right: 1px solid #ffffff;
+}
+
+/* Slider track */
+.fc-track1 {
+  display: flex;
+  flex-wrap: nowrap;
+  transition: transform 0.1s ease;
+  background: #000000;
+}
+
+/* Individual slide */
+.fc-slide1 {
+  flex: 0 0 calc((100%) / 4);
+  background: #000000;
+  border-left: 1px solid #ffffff;
+  border-top: none;
+  border-bottom: none;
+  padding-left: 18px;
+  padding-right: 18px;
+  padding-top: 18px;
+  box-sizing: border-box;
+}
+
+/* Flip Card Styles */
+.fc-card1 {
+  perspective: 1000px;
+  background: #000000;
+}
+
+.fc-card-inner1 {
+  position: relative;
+  width: 100%;
+  padding-top: 150%;  /* 2:3 ratio */
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  background: #000000;
+}
+
+.fc-card1:hover .fc-card-inner1 {
+  transform: rotateY(180deg);
+}
+
+.fc-card-front1,
+.fc-card-back1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 1px;
+  overflow: hidden;
+  background: #000000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.fc-card-front1 img,
+.fc-card-back1 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Back face rotated 180deg */
+.fc-card-back1 {
+  transform: rotateY(180deg);
+}
+
+/* Product name and price */
+.fc-pname1 {
+  font-size: 16px;
+  margin: 10px 0;
+  color: #ffffff;
+  text-align: left;
+}
+
+.fc-price1 {
+  font-size: 14px;
+  color: #ffffff;
+  text-align: left;
+}
+
+/* Navigation arrows */
+.fc-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 40px;
+  text-align: center;
+  z-index: 10;
+}
+
+.fc-prev1 {
+  left: 10px;
+}
+
+.fc-next1 {
+  right: 10px;
+}
+
+/* Mobile: Two products per slide */
+@media (max-width: 767px) {
+  .fc-slide1 {
+    flex: 0 0 calc(100% / 2);
+  }
+}

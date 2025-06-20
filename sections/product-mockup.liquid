@@ -1,0 +1,62 @@
+{% comment %}
+  Section: Single Collection Crossfade Slider with Hero Styling & Clickable Poster
+  Displays one product from the selected collection at a time.
+  Every interval, the slider crossfades to the next product.
+{% endcomment %}
+
+{{ 'product-mockup.css' | asset_url | stylesheet_tag }}
+
+<section class="ccm-section">
+  <div class="ccm-bg"></div>
+  <div class="ccm-container">
+    <div class="ccm-poster-container">
+      <div class="ccm-poster"></div>
+    </div>
+  </div>
+
+  {% assign collection_handle = section.settings.collection %}
+  {% if collection_handle != blank and collections[collection_handle] %}
+    {% assign coll = collections[collection_handle] %}
+    {% capture collData %}
+{"productData": [
+  {%- for product in coll.products -%}
+    {"image": "{% if product.featured_image %}{{ product.featured_image | img_url: '600x' | escape }}{% else %}https://via.placeholder.com/600x400?text=No+Image{% endif %}", "url": "{{ product.url | escape }}"}{% unless forloop.last %},{% endunless %}
+  {%- endfor -%}
+]}
+    {% endcapture %}
+    <script>
+      window.ccmSettings = {
+        animationInterval: {{ section.settings.animation_interval | default: 3000 }},
+        collection: {{ collData }}
+      };
+    </script>
+    {{ 'product-mockup.js' | asset_url | script_tag }}
+  {% else %}
+    <p>No collection selected or the selected collection has no products.</p>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Product Mockup",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Select Collection"
+    },
+    {
+      "type": "number",
+      "id": "animation_interval",
+      "label": "Animation Interval (ms)",
+      "default": 3000
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Mockup",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

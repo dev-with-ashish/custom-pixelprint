@@ -1,0 +1,292 @@
+{% comment %}
+  Advanced Category/Collection Hub Section
+  - Select any collection
+  - Custom Title
+  - Blog-like content (Heading + rich text)
+  - Video upload/embed
+  - Manual FAQs (accordion)
+  - Manual Reviews (with fixed stars logic)
+  - Pick tags to auto-show matching blog articles in card row
+  - All blocks optional & unlimited (except for collection picker)
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Advanced Category Hub",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "pick_collection",
+      "label": "Select Collection"
+    },
+    {
+      "type": "text",
+      "id": "category_title",
+      "label": "Title",
+      "default": "Collection Title"
+    },
+    {
+      "type": "text",
+      "id": "blog_heading",
+      "label": "Blog/Content Heading",
+      "default": "Collection Heading Like a blog post Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "blog_content",
+      "label": "Blog/Content Description (HTML supported)"
+    },
+    {
+      "type": "video_url",
+      "id": "main_video",
+      "label": "Video Upload or Embed URL (YouTube, Vimeo, or MP4)",
+      "accept": ["youtube", "vimeo",]
+    },
+    {
+      "type": "text",
+      "id": "faq_heading",
+      "label": "FAQ Section Heading",
+      "default": "FAQs"
+    },
+    {
+      "type": "text",
+      "id": "reviews_heading",
+      "label": "Reviews Section Heading",
+      "default": "Reviews of the product in this collection"
+    },
+    {
+      "type": "text",
+      "id": "blog_tag_heading",
+      "label": "Blog Row Section Heading",
+      "default": "Related Blog Posts Same Fetched From Tags"
+    },
+    {
+      "type": "text",
+      "id": "pick_tags",
+      "label": "Tags for related blogs (comma separated: safety,poster,art)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question" },
+        { "type": "textarea", "id": "answer", "label": "Answer" }
+      ]
+    },
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Reviewer Name" },
+        { "type": "image_picker", "id": "avatar", "label": "Photo (optional)" },
+        { "type": "text", "id": "location", "label": "Location (optional)" },
+        { "type": "textarea", "id": "review", "label": "Review" },
+        { "type": "range", "id": "stars", "min": 1, "max": 5, "step": 1, "default": 5, "label": "Star Rating" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Advanced Category Hub" }
+  ]
+}
+{% endschema %}
+
+
+{% assign sel_collection = collections[section.settings.pick_collection] %}
+
+<div class="cat-hub-main" style="background:#fff; border-radius:14px; margin-bottom:30px; box-shadow: 0 2px 10px rgba(24,44,60,.03);">
+
+  <!-- Title -->
+  <div style="padding: 18px 30px 12px 30px;">
+    <h2 style="font-size:2rem; margin-bottom:6px; font-weight:600;">{{ section.settings.category_title }}</h2>
+  </div>
+
+  <!-- Product Grid (with Filters) -->
+  {% if sel_collection != nil %}
+    <div style="padding: 0 30px 18px 30px;">
+      <div style="border:1px solid #e5e5e5; border-radius:10px; overflow:hidden;">
+        {% for product in sel_collection.products limit:8 %}
+          {% if forloop.first %}
+            <div style="display:flex; gap:20px; align-items:flex-start;">
+              <div style="min-width:160px; background:#f9f9fa; padding:22px 12px; border-right:1px solid #eee;">
+                <!-- Example Filters. For real filters, use app or theme-powered filter section! -->
+                <div style="font-weight:600; font-size:18px; margin-bottom:14px;">Filters</div>
+                <div style="font-size:15px; margin-bottom:10px;">Availability</div>
+                <div style="color:#4caf50; font-size:15px; margin-bottom:12px;">In stock ({{ sel_collection.all_products_count }})</div>
+                <div style="font-size:15px; margin-bottom:10px;">Price</div>
+                <input type="range" min="0" max="30000" value="0" style="width:90%;">
+              </div>
+              <div style="flex:1; display:grid; grid-template-columns: repeat(4, 1fr); gap:22px; padding:30px 0;">
+          {% endif %}
+                  <div style="background:#fff; border-radius:10px; box-shadow:0 2px 12px #eee; overflow:hidden; position:relative; text-align:center;">
+                    <a href="{{ product.url }}">
+                      <img src="{{ product.featured_image | img_url: '400x' }}" alt="{{ product.title }}" style="width:100%; height:210px; object-fit:cover;">
+                      <div style="padding:10px;">
+                        <div style="font-weight:600; margin-bottom:3px;">{{ product.title | truncate: 18 }}</div>
+                        <div style="color:#222; font-weight:500; font-size:15px;">₹ {{ product.price | divided_by: 100 }}</div>
+                        {% if product.compare_at_price > product.price %}
+                          <span style="color:#e53935; font-size:13px; display:inline;">₹ {{ product.compare_at_price | divided_by: 100 }}</span>
+                          <span style="color:#388e3c; font-weight:600; font-size:12px; margin-left:8px;">{{ 100 | minus: product.price | times: 100 | divided_by: product.compare_at_price | round }}% Off</span>
+                        {% endif %}
+                      </div>
+                    </a>
+                  </div>
+          {% if forloop.last %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Blog/Content Section -->
+  <div style="padding: 24px 30px 0 30px;">
+    <h3 style="font-size:1.4rem; font-weight:600; margin-bottom:10px;">{{ section.settings.blog_heading }}</h3>
+    <div style="font-size:1.11rem; line-height:1.7;">
+      {{ section.settings.blog_content }}
+    </div>
+  </div>
+
+  <!-- Video Upload/Embed -->
+  {% if section.settings.main_video != blank %}
+    <div style="padding: 28px 30px 0 30px;">
+      <div style="max-width:500px;">
+        {% if section.settings.main_video contains 'youtube' or section.settings.main_video contains 'youtu.be' %}
+          <iframe width="100%" height="280"
+            src="{{ section.settings.main_video | replace: 'watch?v=', 'embed/' | replace: 'youtu.be/', 'youtube.com/embed/' }}"
+            frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>
+        {% elsif section.settings.main_video contains 'vimeo' %}
+          <iframe src="{{ section.settings.main_video | replace: 'vimeo.com/', 'player.vimeo.com/video/' }}"
+            width="100%" height="280" frameborder="0" allowfullscreen style="border-radius:12px;"></iframe>
+        {% else %}
+          <video controls width="100%" height="280" style="border-radius:12px;">
+            <source src="{{ section.settings.main_video }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- FAQ Section -->
+  <div style="padding: 32px 30px 0 30px;">
+    <h3 style="font-size:1.1rem; font-weight:600;">{{ section.settings.faq_heading }}</h3>
+    <div class="cat-hub-faq-list" id="cat-hub-faq-{{ section.id }}">
+      {% for block in section.blocks %}
+        {% if block.type == 'faq' %}
+          <div class="cat-hub-faq-item" style="margin-bottom:12px;">
+            <button class="cat-hub-faq-q" type="button" aria-expanded="false" style="background:#f7f7fa; border:none; width:100%; text-align:left; padding:1rem; font-size:1.06rem; font-weight:600; border-radius:6px;">
+              {{ block.settings.question }}
+              <span class="cat-hub-faq-arrow" style="float:right;">&#9660;</span>
+            </button>
+            <div class="cat-hub-faq-a" style="display:none; background:#fff; padding:1rem 1.1rem; border-left:3px solid #0a5a8e; border-radius:0 0 6px 6px; margin-top:-8px;">
+              {{ block.settings.answer }}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var faqs = document.querySelectorAll('#cat-hub-faq-{{ section.id }} .cat-hub-faq-q');
+      faqs.forEach(function(faqBtn) {
+        faqBtn.addEventListener('click', function() {
+          var expanded = this.getAttribute('aria-expanded') === 'true';
+          faqs.forEach(function(otherBtn) {
+            if (otherBtn !== faqBtn) {
+              otherBtn.setAttribute('aria-expanded', 'false');
+              otherBtn.nextElementSibling.style.display = 'none';
+            }
+          });
+          this.setAttribute('aria-expanded', !expanded);
+          this.nextElementSibling.style.display = expanded ? 'none' : 'block';
+        });
+      });
+    });
+    </script>
+  </div>
+
+  <!-- Related Blog Posts Slider -->
+  <div style="padding: 36px 30px 0 30px;">
+    <h3 style="font-size:1.1rem; font-weight:600;">{{ section.settings.blog_tag_heading }}</h3>
+    <div class="cat-hub-blog-slider" style="display:flex; gap:14px; overflow-x:auto; padding-bottom:12px;">
+      {% assign tags = section.settings.pick_tags %}
+      {% assign articles_found = false %}
+      {% for article in blogs.blog.articles %}
+        {% assign show = false %}
+        {% for tag in tags %}
+          {% if article.tags contains tag %}
+            {% assign show = true %}
+          {% endif %}
+        {% endfor %}
+        {% if show %}
+          {% assign articles_found = true %}
+          <div style="width:180px; background:#fff; border-radius:10px; box-shadow:0 2px 8px #eee; min-width:180px;">
+            <a href="{{ article.url }}" style="text-decoration:none;">
+              {% if article.image %}
+                <img src="{{ article.image | img_url: '200x200' }}" alt="{{ article.title }}" style="width:100%; height:120px; object-fit:cover; border-radius:10px 10px 0 0;">
+              {% endif %}
+              <div style="padding:8px 10px 14px 10px;">
+                <div style="font-weight:600; font-size:15px; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ article.title | truncate: 32 }}</div>
+                <p style="font-size:12px; color:#333; margin:0;">{{ article.excerpt | strip_html | truncate: 60 }}</p>
+              </div>
+            </a>
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% unless articles_found %}
+        <p>No related articles found for these tags.</p>
+      {% endunless %}
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div style="padding: 36px 30px;">
+    <h3 style="font-size:1.1rem; font-weight:600;">{{ section.settings.reviews_heading }}</h3>
+    <div class="cat-hub-reviews-row" style="display:flex; gap:20px; flex-wrap:wrap;">
+      {% for block in section.blocks %}
+        {% if block.type == 'review' %}
+          <div style="min-width:250px; background:#fff; border-radius:10px; box-shadow:0 2px 8px #eee; padding:14px; display:flex; flex-direction:column; align-items:center;">
+            {% if block.settings.avatar != blank %}
+              <img src="{{ block.settings.avatar | image_url: width: 60 }}" alt="Reviewer photo" style="width:60px; height:60px; border-radius:50%; object-fit:cover; margin-bottom:10px;">
+            {% endif %}
+            <div style="font-weight:700; margin-bottom:3px;">{{ block.settings.name }}</div>
+            <div style="font-size:13px; color:#888;">{{ block.settings.location }}</div>
+            <div style="margin:7px 0;">
+              {% assign stars_int = block.settings.stars | plus: 0 %}
+              {% for i in (1..stars_int) %}
+                <span style="color:#ffd700;">&#9733;</span>
+              {% endfor %}
+              {% assign start_at = stars_int | plus: 1 %}
+              {% for i in (start_at..5) %}
+                <span style="color:#eee;">&#9733;</span>
+              {% endfor %}
+            </div>
+            <blockquote style="font-style:italic; font-size:15px; text-align:center;">“{{ block.settings.review }}”</blockquote>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<style>
+.cat-hub-main { max-width:1120px; margin: 30px auto 40px auto; }
+.cat-hub-blog-slider::-webkit-scrollbar { height: 8px; background: #eee; }
+.cat-hub-blog-slider::-webkit-scrollbar-thumb { background: #ccc; border-radius: 8px; }
+@media (max-width: 1000px) {
+  .cat-hub-main { max-width:98vw !important; }
+}
+@media (max-width: 850px) {
+  .cat-hub-reviews-row, .cat-hub-blog-slider { flex-wrap:nowrap !important; }
+}
+@media (max-width: 750px) {
+  .cat-hub-main { padding:0 !important; }
+  .cat-hub-reviews-row { flex-direction:column !important; gap:18px; }
+  .cat-hub-blog-slider { gap:10px !important; }
+}
+</style>
